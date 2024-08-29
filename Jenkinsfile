@@ -10,11 +10,9 @@ pipeline {
         
         stage('Test') {
             steps {
-                // Тестування HTML файлів
                 sh 'htmlhint index.html'
                 sh 'htmlhint templates/*.html'
 
-                // Тестування CSS файлів
                 script {
                     def cssFiles = sh(script: "ls static/*.css 2>/dev/null", returnStatus: true)
                     if (cssFiles == 0) {
@@ -24,8 +22,6 @@ pipeline {
                     }
                 }
 
-                // Тестування JavaScript файлів (якщо вони у вас є)
-                // sh 'jshint static/*.js'
             }
         }
         

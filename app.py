@@ -11,7 +11,6 @@ def index():
     response = requests.get(base_url)
     data = response.json()
 
-    # Додатковий принт для перевірки структури даних
     print(data)
 
     if response.status_code == 200:
