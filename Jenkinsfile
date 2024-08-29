@@ -4,23 +4,33 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Клонування репозиторію з гілки main
                 git branch: 'main', url: 'https://github.com/Shava173/Weather_Exam.git'
             }
         }
         
         stage('Test') {
             steps {
-                // Команди для тестування
-                sh 'htmlhint *.html'
-                sh 'csslint *.css'
-                sh 'jshint *.js'
+                // Тестування HTML файлів
+                sh 'htmlhint index.html'
+                sh 'htmlhint templates/*.html'
+
+                // Тестування CSS файлів
+                script {
+                    def cssFiles = sh(script: "ls static/*.css 2>/dev/null", returnStatus: true)
+                    if (cssFiles == 0) {
+                        sh 'csslint static/*.css'
+                    } else {
+                        echo 'No CSS files found to lint.'
+                    }
+                }
+
+                // Тестування JavaScript файлів (якщо вони у вас є)
+                // sh 'jshint static/*.js'
             }
         }
         
         stage('Deploy') {
             steps {
-                // Команди для деплою
                 sh 'rsync -avz --delete-after $WORKSPACE/ /var/www/html/'
                 sh 'sudo systemctl restart apache2'
             }
@@ -28,7 +38,6 @@ pipeline {
         
         stage('Verify') {
             steps {
-                // Перевірка роботи веб-сайту
                 script {
                     def response = sh(script: "curl -o /dev/null -s -w '%{http_code}' http://localhost", returnStdout: true).trim()
                     if (response != '200') {
