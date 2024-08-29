@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Клонування репозиторію
-                git url: 'https://github.com/Shava173/Weather_Exam.git'
+                // Клонування репозиторію з гілки main
+                git branch: 'main', url: 'https://github.com/Shava173/Weather_Exam.git'
             }
         }
         
